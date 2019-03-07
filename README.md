@@ -2,7 +2,7 @@
 <pre>
 A chat room include server and client using TCP socket.
 
-client: 1. Usage => ./client "<server IP> <port #>"  
+client: 1. Usage => ./client \<server IP> <port #>  
         2. Connect to server.  
         3. Handle input:  
            i <Message> => 訊息傳送給同一個群組下的成員  
