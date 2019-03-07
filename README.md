@@ -1,5 +1,5 @@
 # chat-room
-
+<pre>
 A chat room include server and client using TCP socket.
 
 client: 1. Usage => ./client <server IP> <port #>  
@@ -15,3 +15,4 @@ server: 1. Usage => ./server <port #>
           i 訊息傳送給同一個群組下的成員。  
           ii 判斷訊息傳送的對象是人還是群組並將訊息傳給指定的人或者群組。  
           iii 有人加入聊天室或者離開聊天室時,通知所有的成員。  
+</pre>
