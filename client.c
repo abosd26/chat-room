@@ -103,17 +103,17 @@ void *ForSend(void *param){
 		//if client doesn't want to leave, keep printing header
 		printf("%s > ", myName);
 		//wait for client input
-	        fgets(buffer, sizeof(buffer), stdin);
+		fgets(buffer, sizeof(buffer), stdin);
 		mu newMsg;
 		if(strtok(buffer, "\n")){
-        		strcpy(newMsg.msg, buffer);
+			strcpy(newMsg.msg, buffer);
 		}
 		else{
 			strcpy(newMsg.msg, "");
 		}
 		strcpy(newMsg.src, myName);
 		strcpy(newMsg.room, myRoom);
-        	n = write(*sock, &newMsg, sizeof(mu));
+		n = write(*sock, &newMsg, sizeof(mu));
 		//if client say Bye, then exit the thread
 		if(strcmp(newMsg.msg, "Bye") == 0){
 			break;
@@ -122,7 +122,7 @@ void *ForSend(void *param){
 }
 void *ForReceive(void *param){
 	char buffer[256];
-        int *sock = (int *)param, n;
+	int *sock = (int *)param, n;
 	while(1){
 		mu newMsg;
 		//wait for message from server

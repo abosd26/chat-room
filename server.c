@@ -102,7 +102,7 @@ int main(int argc, char* argv[]){
 			cPtr newThread = (cPtr)malloc(sizeof(struct connection));
 			pthread_create(&(newThread->th), NULL, ThreadStuff, newsockfdptr);
 			newThread->next = threadList;
-                        threadList = newThread;
+			threadList = newThread;
 			newThread->fd = newsockfdptr;
 			pthread_detach(newThread->th);
 		}
@@ -165,51 +165,51 @@ void *ThreadStuff(void *param){
 	bzero(buffer, sizeof(buffer));
 	n = read(*sock, buffer, sizeof(buffer));
 	currentRoom = roomList;
-        while(currentRoom){
+	while(currentRoom){
 		if(strcmp(currentRoom->name, buffer) == 0){
 			newUser->next = currentRoom->start;
 			currentRoom->start = newUser;
 			break;
 		}
-                currentRoom = currentRoom->next;
-        }
-        if(!currentRoom){
+		currentRoom = currentRoom->next;
+	}
+	if(!currentRoom){
 		rPtr newRoom = (rPtr)malloc(sizeof(struct room));
 		newRoom->next = roomList;
 		newRoom->start = newUser;
 		strcpy(newRoom->name, buffer);
-                roomList = newRoom;
+		roomList = newRoom;
 		//for print
 		currentRoom = roomList;
-        }
-        bzero(myName, sizeof(myName));
-        bzero(myRoom, sizeof(myRoom));
+	}
+	bzero(myName, sizeof(myName));
+	bzero(myRoom, sizeof(myRoom));
 	strcpy(myName, newUser->name);
 	strcpy(myRoom, currentRoom->name);
 	//print the log in information at server
 	mu *newMsg = (mu *)malloc(sizeof(mu));
 	bzero(newMsg->msg, sizeof(newMsg->msg));
 	strcpy(newMsg->msg, "client [");
-        strcat(strcat(strcat(strcat(newMsg->msg, myName), "] log in room ["), myRoom), "]");
+	strcat(strcat(strcat(strcat(newMsg->msg, myName), "] log in room ["), myRoom), "]");
 	printf("%s\n", newMsg->msg);
 	//inform all clients that a new client has log in
 	bzero(newMsg->msg, sizeof(newMsg->msg));
-        strcpy(newMsg->msg, "[note : client [");
-        strcat(strcat(strcat(strcat(newMsg->msg, myName), "] log in room ["), myRoom), "]]");
+	strcpy(newMsg->msg, "[note : client [");
+	strcat(strcat(strcat(strcat(newMsg->msg, myName), "] log in room ["), myRoom), "]]");
 	bzero(newMsg->src, sizeof(newMsg->src));
-        strcpy(newMsg->src, "server");
-        currentRoom = roomList;
-        while(currentRoom){
-        	currentUser = currentRoom->start;
-                while(currentUser){
-                	//inform all except the log out one
-                        if(strcmp(currentUser->name, myName) != 0){
-                        	n = write(currentUser->fd, newMsg, sizeof(mu));
-                        }
-                        currentUser = currentUser->next;
-                }
-                currentRoom = currentRoom->next;
-        }
+	strcpy(newMsg->src, "server");
+	currentRoom = roomList;
+	while(currentRoom){
+		currentUser = currentRoom->start;
+		while(currentUser){
+			//inform all except the log out one
+			if(strcmp(currentUser->name, myName) != 0){
+				n = write(currentUser->fd, newMsg, sizeof(mu));
+			}
+			currentUser = currentUser->next;
+		}
+		currentRoom = currentRoom->next;
+	}
 	free(newMsg);
 	while(1){
 		mu *newMsg = (mu *)malloc(sizeof(mu));
@@ -219,9 +219,9 @@ void *ThreadStuff(void *param){
 		if(strcmp(newMsg->msg, "Bye") == 0){
 			//print leave message at server
 			bzero(newMsg->msg, sizeof(newMsg->msg));
-                        strcpy(newMsg->msg, "client [");
-                        strcat(strcat(newMsg->msg, newMsg->src), "] leave.");
-                        printf("%s\n", newMsg->msg);
+			strcpy(newMsg->msg, "client [");
+			strcat(strcat(newMsg->msg, newMsg->src), "] leave.");
+			printf("%s\n", newMsg->msg);
 			//prepare to send the leaving message
 			bzero(newMsg->msg, sizeof(newMsg->msg));
 			strcpy(newMsg->msg, "[note : client [");
@@ -235,13 +235,13 @@ void *ThreadStuff(void *param){
 			rPtr beforeRoom = NULL;
 			rPtr tempBeforeRoom;
 			rPtr tempRoom;
-                        while(currentRoom){
-                        	currentUser = currentRoom->start;
-                                while(currentUser){
+			while(currentRoom){
+				currentUser = currentRoom->start;
+				while(currentUser){
 					//inform all except the log out one
-                                	if(strcmp(currentUser->name, myName) != 0){
-                                        	n = write(currentUser->fd, newMsg, sizeof(mu));
-                                	}
+					if(strcmp(currentUser->name, myName) != 0){
+						n = write(currentUser->fd, newMsg, sizeof(mu));
+					}
 					//also acknowledge the log out client to leave
 					else{
 						mu *leaveMsg = (mu *)malloc(sizeof(mu));
@@ -256,17 +256,17 @@ void *ThreadStuff(void *param){
 						tempRoom = currentRoom;
 					}
 					beforeUser = currentUser;
-                                        currentUser = currentUser->next;
-                                }
+					currentUser = currentUser->next;
+				}
 				beforeRoom = currentRoom;
-                                currentRoom = currentRoom->next;
-                        }
+				currentRoom = currentRoom->next;
+			}
 			//close the connection of the leaving client + release the related resources
-                        if(tempBefore && tempCurrent != tempRoom->start){
-                        	tempBefore->next = tempCurrent->next;
-                        }
-                        else{
-                        	tempRoom->start = tempCurrent->next;
+			if(tempBefore && tempCurrent != tempRoom->start){
+				tempBefore->next = tempCurrent->next;
+			}
+			else{
+				tempRoom->start = tempCurrent->next;
 				//if there isn't any client exist in the room, then release resources of the room
 				if(!tempRoom->start){
 					if(tempBeforeRoom){
@@ -277,9 +277,9 @@ void *ThreadStuff(void *param){
 					}
 					free(tempRoom);
 				}
-                        }
-                        //exit the thread after closing the connection and releasing resources of this client
-                        close(*sock);
+			}
+			//exit the thread after closing the connection and releasing resources of this client
+			close(*sock);
 			free(tempCurrent);
 			free(newMsg);
 			cPtr currentThread = threadList;
@@ -338,10 +338,10 @@ void *ThreadStuff(void *param){
 				//if the object to be transmitted is a group
 				if(strcmp(currentRoom->name, buffer) == 0){
 					currentUser = currentRoom->start;
-                                        while(currentUser){
-                                                n = write(currentUser->fd, newMsg, sizeof(mu));
-                                                currentUser = currentUser->next;
-                                        }
+					while(currentUser){
+						n = write(currentUser->fd, newMsg, sizeof(mu));
+						currentUser = currentUser->next;
+					}
 					find = 1;
 
 				}
